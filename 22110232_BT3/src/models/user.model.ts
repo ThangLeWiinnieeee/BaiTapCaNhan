@@ -1,10 +1,11 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { IUser } from './user.model';
+import { Types } from "mongoose";
 
 export interface IUser extends Document {
+    _id: Types.ObjectId;
   email: string;
-  password?: string;
+  password?: string; // ? (optional) và select: false để không trả về
   firstName: string;
   lastName: string;
   address: string;
@@ -15,7 +16,7 @@ export interface IUser extends Document {
 
 const UserSchema: Schema = new Schema({
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true, select: false },
+  password: { type: String, required: true, select: false }, // select: false để không trả về password khi query
   firstName: { type: String },
   lastName: { type: String },
   address: { type: String },
@@ -24,12 +25,12 @@ const UserSchema: Schema = new Schema({
   roleId: { type: String },
 }, {
   timestamps: true,
-  toJSON: { virtuals: true }, // Để đảm bảo 'id' ảo được thêm vào
+  toJSON: { virtuals: true }, // Đảm bảo 'id' ảo được thêm vào khi .toJSON()
   toObject: { virtuals: true }
 });
 
-// Hash password trước khi lưu
 UserSchema.pre<IUser>('save', async function (next) {
+  // Chỉ hash password nếu nó được thay đổi (hoặc là mới)
   if (!this.isModified('password') || !this.password) {
     return next();
   }
@@ -42,7 +43,6 @@ UserSchema.pre<IUser>('save', async function (next) {
   }
 });
 
-// Tạo một trường 'id' ảo từ '_id' để tương thích với view EJS 
 UserSchema.virtual('id').get(function (this: IUser) {
   return this._id.toHexString();
 });
