@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>List Users</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  
+  <style>
+    body {
+      background-color: #f8f9fa; /* Màu nền xám nhạt */
+    }
+    .container {
+      margin-top: 30px;
+    }
+    .table-container {
+      background-color: #ffffff; /* Nền trắng cho bảng */
+      border-radius: 8px; /* Bo góc */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Thêm bóng đổ mềm */
+      padding: 20px;
+    }
+    .table thead th {
+      background-color: #007bff; /* Nền xanh cho header */
+      color: #ffffff; /* Chữ trắng */
+      border: none;
+    }
+    .table tbody tr:hover {
+      background-color: #f1f1f1; /* Highlight khi di chuột */
+    }
+    .table td, .table th {
+      vertical-align: middle; /* Căn giữa theo chiều dọc */
+      border-top: 1px solid #dee2e6;
+    }
+    .action-links a {
+      margin-right: 8px; /* Khoảng cách giữa các nút */
+      padding: 6px 12px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .link-edit {
+      background-color: #ffc107; /* Màu vàng cho Edit */
+      color: #212529;
+    }
+    .link-edit:hover {
+      background-color: #e0a800;
+      color: #212529;
+    }
+    .link-delete {
+      background-color: #dc3545; /* Màu đỏ cho Delete */
+      color: #ffffff;
+    }
+    .link-delete:hover {
+      background-color: #c82333;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3>List Users</h3>
+      <a href="/crud" class="btn btn-primary">Create new user</a>
+    </div>
+
+    <div class="table-container">
+      <table class="table table-borderless table-striped">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Address</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(let i=0; i < datalist.length; i++) { %>
+            <tr>
+              <td><%= datalist[i].email %></td>
+              <td><%= datalist[i].firstName %></td>
+              <td><%= datalist[i].lastName %></td>
+              <td><%= datalist[i].address %></td>
+              <td class="action-links">
+                <a href="/edit-crud?id=<%= datalist[i].id %>" class="link-edit">Edit</a>
+                <a href="/delete-crud?id=<%= datalist[i].id %>" class="link-delete">Delete</a>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+</html>
