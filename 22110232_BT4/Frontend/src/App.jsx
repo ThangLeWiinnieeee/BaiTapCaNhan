@@ -6,7 +6,6 @@ import Home from './pages/home';
 import Login from './pages/login';
 import Register from './pages/register';
 import Products from './pages/products';
-import './App.css';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
