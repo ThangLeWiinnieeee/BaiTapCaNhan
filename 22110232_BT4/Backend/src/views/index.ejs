@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+    .container {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .info {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 2rem;
+    }
+    .endpoints {
+      text-align: left;
+      margin-top: 1rem;
+    }
+    code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.2rem 0.5rem;
+      border-radius: 5px;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><%= title %></h1>
+    <p><%= message %></p>
+    
+    <div class="info">
+      <h2>API Endpoints:</h2>
+      <div class="endpoints">
+        <p><strong>POST</strong> <code>/api/register</code> - Register new user</p>
+        <p><strong>POST</strong> <code>/api/login</code> - Login user</p>
+        <p><strong>GET</strong> <code>/api/user</code> - Get user info (requires token)</p>
+        <p><strong>GET</strong> <code>/api</code> - API home (requires token)</p>
+      </div>
+    </div>
+
+    <% if (user) { %>
+      <div class="info">
+        <h3>Logged in as: <%= user.username %></h3>
+        <p>Email: <%= user.email %></p>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>
