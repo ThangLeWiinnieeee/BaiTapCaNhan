@@ -5,6 +5,7 @@ import Header from './components/layout/header';
 import Home from './pages/home';
 import Login from './pages/login';
 import Register from './pages/register';
+import Products from './pages/products';
 import './App.css';
 
 // Protected Route Component
@@ -37,6 +38,7 @@ function AppContent() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/products" element={<Products />} />
             <Route
               path="/login"
               element={

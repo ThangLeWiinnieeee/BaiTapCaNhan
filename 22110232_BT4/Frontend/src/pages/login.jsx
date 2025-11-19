@@ -28,10 +28,23 @@ const Login = () => {
         message.success('Login successful!');
         navigate('/');
       } else {
-        message.error(response.EM || 'Login failed');
+        // Handle validation errors from backend
+        if (response.DT && Array.isArray(response.DT)) {
+          const errorMessages = response.DT.map(err => err.msg || err.message).join(', ');
+          message.error(errorMessages || response.EM || 'Login failed');
+        } else {
+          message.error(response.EM || 'Login failed');
+        }
       }
     } catch (error) {
-      message.error(error.EM || 'Login failed. Please check your credentials.');
+      if (error.response?.data?.DT && Array.isArray(error.response.data.DT)) {
+        const errorMessages = error.response.data.DT.map(err => err.msg || err.message).join(', ');
+        message.error(errorMessages || error.response?.data?.EM || 'Login failed. Please check your credentials.');
+      } else if (error.response?.data?.EM) {
+        message.error(error.response.data.EM);
+      } else {
+        message.error('Login failed. Please check your credentials.');
+      }
     } finally {
       setLoading(false);
     }
@@ -51,24 +64,32 @@ const Login = () => {
             name="email"
             rules={[
               { required: true, message: 'Please input your email!' },
-              { type: 'email', message: 'Please enter a valid email!' }
+              { type: 'email', message: 'Please enter a valid email address!' },
+              { whitespace: true, message: 'Email cannot be empty!' }
             ]}
+            hasFeedback
           >
             <Input
               prefix={<UserOutlined />}
               placeholder="Email"
               size="large"
+              autoComplete="email"
             />
           </Form.Item>
 
           <Form.Item
             name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
+            rules={[
+              { required: true, message: 'Please input your password!' },
+              { min: 6, message: 'Password must be at least 6 characters!' }
+            ]}
+            hasFeedback
           >
             <Input.Password
               prefix={<LockOutlined />}
               placeholder="Password"
               size="large"
+              autoComplete="current-password"
             />
           </Form.Item>
 
