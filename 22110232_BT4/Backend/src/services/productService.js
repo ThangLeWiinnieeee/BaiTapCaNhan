@@ -1,4 +1,5 @@
 import Product from '../models/product.js';
+import Fuse from 'fuse.js';
 
 // Get all products with pagination and optional category filter
 export const getProducts = async (page = 1, limit = 10, category = null) => {
@@ -172,3 +173,121 @@ export const deleteProduct = async (productId) => {
   }
 };
 
+// Search and Filter products with Fuzzy Search
+export const searchAndFilterProducts = async (searchParams) => {
+  try {
+    const {
+      query = '',
+      category = null,
+      minPrice = null,
+      maxPrice = null,
+      minDiscount = null,
+      minRating = null,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      page = 1,
+      limit = 10,
+    } = searchParams;
+
+    // Build base query
+    const baseQuery = { status: 'active' };
+
+    // Filter by category
+    if (category) {
+      baseQuery.category = category;
+    }
+
+    // Filter by price range
+    if (minPrice !== null || maxPrice !== null) {
+      baseQuery.price = {};
+      if (minPrice !== null) baseQuery.price.$gte = parseFloat(minPrice);
+      if (maxPrice !== null) baseQuery.price.$lte = parseFloat(maxPrice);
+    }
+
+    // Filter by discount
+    if (minDiscount !== null) {
+      baseQuery.discount = { $gte: parseFloat(minDiscount) };
+    }
+
+    // Filter by rating
+    if (minRating !== null) {
+      baseQuery.rating = { $gte: parseFloat(minRating) };
+    }
+
+    // Get all products matching filters
+    const allProducts = await Product.find(baseQuery).lean();
+
+    let filteredProducts = allProducts;
+
+    // Apply Fuzzy Search if query is provided
+    if (query && query.trim() !== '') {
+      const fuseOptions = {
+        keys: ['name', 'description', 'category'],
+        threshold: 0.4, // 0.0 = perfect match, 1.0 = match anything
+        includeScore: true,
+        minMatchCharLength: 2,
+      };
+
+      const fuse = new Fuse(allProducts, fuseOptions);
+      const searchResults = fuse.search(query);
+      
+      // Extract items from search results
+      filteredProducts = searchResults.map(result => result.item);
+    }
+
+    // Sort products
+    const sortOrderValue = sortOrder === 'asc' ? 1 : -1;
+    filteredProducts.sort((a, b) => {
+      let aValue = a[sortBy];
+      let bValue = b[sortBy];
+      
+      // Handle date sorting
+      if (sortBy === 'createdAt' || sortBy === 'updatedAt') {
+        aValue = new Date(aValue);
+        bValue = new Date(bValue);
+      }
+      
+      if (aValue < bValue) return -1 * sortOrderValue;
+      if (aValue > bValue) return 1 * sortOrderValue;
+      return 0;
+    });
+
+    // Pagination
+    const total = filteredProducts.length;
+    const skip = (page - 1) * limit;
+    const paginatedProducts = filteredProducts.slice(skip, skip + limit);
+
+    return {
+      EC: 0,
+      EM: 'Search and filter products successfully',
+      DT: {
+        products: paginatedProducts,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+          hasNext: page * limit < total,
+          hasPrev: page > 1,
+        },
+        filters: {
+          query,
+          category,
+          minPrice,
+          maxPrice,
+          minDiscount,
+          minRating,
+          sortBy,
+          sortOrder,
+        },
+      },
+    };
+  } catch (error) {
+    console.error('Search and filter products error:', error);
+    return {
+      EC: -1,
+      EM: 'Error searching and filtering products',
+      DT: null,
+    };
+  }
+};

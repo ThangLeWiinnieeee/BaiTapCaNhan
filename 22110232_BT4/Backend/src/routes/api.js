@@ -8,6 +8,7 @@ import {
   handleCreateProduct,
   handleUpdateProduct,
   handleDeleteProduct,
+  handleSearchProducts,
 } from '../controllers/productController.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { delay } from '../middleware/delay.js';
@@ -17,6 +18,7 @@ import {
   validateLogin,
   validateProduct,
   validatePagination,
+  validateSearch,
 } from '../middleware/validation.js';
 import { requireAdmin, requireUser } from '../middleware/authorization.js';
 
@@ -51,6 +53,7 @@ router.get(
 
 // Product routes - Public endpoints (with rate limiting)
 router.get('/api/products', apiLimiter, validatePagination, handleGetProducts);
+router.get('/api/products/search', apiLimiter, validateSearch, handleSearchProducts);
 router.get('/api/categories', apiLimiter, handleGetCategories);
 router.get('/api/products/:id', apiLimiter, handleGetProductById);
 

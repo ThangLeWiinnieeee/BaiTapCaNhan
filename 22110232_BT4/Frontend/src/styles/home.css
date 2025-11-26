@@ -35,6 +35,18 @@
   gap: 0.5rem;
 }
 
+.quick-actions .ant-space {
+  width: 100%;
+  justify-content: center;
+}
+
+.quick-actions .ant-btn {
+  height: auto;
+  padding: 12px 32px;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
 .user-details p {
   margin: 0.8rem 0;
   font-size: 1.1rem;

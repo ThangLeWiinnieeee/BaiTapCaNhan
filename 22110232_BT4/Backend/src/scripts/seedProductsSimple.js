@@ -1,9 +1,19 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Product from '../models/product.js';
-import { connectDB } from '../config/database.js';
 
 dotenv.config();
+
+const connectDB = async () => {
+  try {
+    const MONGODB_URI = process.env.MONGO_DB_URL || process.env.MONGODB_URI || 'mongodb://localhost:27017/fullstack_db';
+    await mongoose.connect(MONGODB_URI);
+    console.log('MongoDB connected successfully');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    process.exit(1);
+  }
+};
 
 const sampleProducts = [
   {
@@ -231,26 +241,34 @@ const sampleProducts = [
 const seedProducts = async () => {
   try {
     await connectDB();
-    console.log('Connected to MongoDB');
+    console.log('Starting to seed products...');
 
     // Clear existing products
-    await Product.deleteMany({});
-    console.log('Cleared existing products');
+    const deleteResult = await Product.deleteMany({});
+    console.log(`Cleared ${deleteResult.deletedCount} existing products`);
 
     // Insert sample products
     const createdProducts = await Product.insertMany(sampleProducts);
-    console.log(`Successfully seeded ${createdProducts.length} products`);
+    console.log(`✅ Successfully seeded ${createdProducts.length} products`);
 
     // Display categories
     const categories = await Product.distinct('category');
-    console.log('Categories:', categories);
+    console.log('📁 Categories:', categories);
 
+    // Display some stats
+    const totalProducts = await Product.countDocuments();
+    const avgPrice = await Product.aggregate([
+      { $group: { _id: null, avgPrice: { $avg: '$price' } } }
+    ]);
+    console.log(`📊 Total products: ${totalProducts}`);
+    console.log(`💰 Average price: ${avgPrice[0]?.avgPrice.toFixed(0)} VND`);
+
+    console.log('\n✨ Seed completed successfully!');
     process.exit(0);
   } catch (error) {
-    console.error('Error seeding products:', error);
+    console.error('❌ Error seeding products:', error);
     process.exit(1);
   }
 };
 
 seedProducts();
-

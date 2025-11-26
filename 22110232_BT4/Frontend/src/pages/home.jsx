@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../components/context/auth.context';
-import { Card, Spin, Alert } from 'antd';
-import { UserOutlined, MailOutlined, PhoneOutlined, HomeOutlined } from '@ant-design/icons';
+import { Card, Spin, Alert, Button, Space } from 'antd';
+import { UserOutlined, MailOutlined, PhoneOutlined, HomeOutlined, SearchOutlined, ShoppingOutlined } from '@ant-design/icons';
 import axios from '../util/axios.customize';
 import '../styles/home.css';
 
@@ -36,6 +37,22 @@ const Home = () => {
     <div className="home-container">
       <div className="home-content">
         <h1 className="home-title">Welcome to FullStack App</h1>
+        
+        <Card className="info-card quick-actions">
+          <h2>Quick Actions</h2>
+          <Space size="middle" wrap>
+            <Link to="/products">
+              <Button type="primary" size="large" icon={<ShoppingOutlined />}>
+                Browse Products
+              </Button>
+            </Link>
+            <Link to="/search">
+              <Button type="primary" size="large" icon={<SearchOutlined />}>
+                Search & Filter Products
+              </Button>
+            </Link>
+          </Space>
+        </Card>
         
         {!isAuthenticated ? (
           <Card className="info-card">

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 export const connectDB = async () => {
   try {
-    const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/fullstack_db';
+    const MONGODB_URI = process.env.MONGO_DB_URL || process.env.MONGODB_URI || 'mongodb://localhost:27017/fullstack_db';
     
     await mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,

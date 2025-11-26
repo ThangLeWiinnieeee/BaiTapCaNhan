@@ -6,6 +6,7 @@ import Home from './pages/home';
 import Login from './pages/login';
 import Register from './pages/register';
 import Products from './pages/products';
+import Search from './pages/search';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -38,6 +39,7 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/search" element={<Search />} />
             <Route
               path="/login"
               element={

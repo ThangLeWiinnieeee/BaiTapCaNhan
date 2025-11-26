@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/auth.context';
-import { LogoutOutlined, UserOutlined, HomeOutlined, ShoppingOutlined } from '@ant-design/icons';
+import { LogoutOutlined, UserOutlined, HomeOutlined, ShoppingOutlined, SearchOutlined } from '@ant-design/icons';
 import '../../styles/header.css';
 
 const Header = () => {
@@ -23,6 +23,9 @@ const Header = () => {
         <nav className="nav-menu">
           <Link to="/products" className="nav-link">
             <ShoppingOutlined /> Products
+          </Link>
+          <Link to="/search" className="nav-link">
+            <SearchOutlined /> Search
           </Link>
           {isAuthenticated ? (
             <>

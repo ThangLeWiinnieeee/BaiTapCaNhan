@@ -101,3 +101,54 @@ export const validatePagination = [
   handleValidationErrors,
 ];
 
+// Validation rules for search and filter parameters
+export const validateSearch = [
+  query('q')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Search query must be between 1 and 100 characters'),
+  query('query')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Search query must be between 1 and 100 characters'),
+  query('category')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Category must be between 1 and 50 characters'),
+  query('minPrice')
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage('Minimum price must be a non-negative number'),
+  query('maxPrice')
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage('Maximum price must be a non-negative number'),
+  query('minDiscount')
+    .optional()
+    .isFloat({ min: 0, max: 100 })
+    .withMessage('Minimum discount must be between 0 and 100'),
+  query('minRating')
+    .optional()
+    .isFloat({ min: 0, max: 5 })
+    .withMessage('Minimum rating must be between 0 and 5'),
+  query('sortBy')
+    .optional()
+    .isIn(['name', 'price', 'createdAt', 'updatedAt', 'views', 'rating', 'discount'])
+    .withMessage('Invalid sort field'),
+  query('sortOrder')
+    .optional()
+    .isIn(['asc', 'desc'])
+    .withMessage('Sort order must be "asc" or "desc"'),
+  query('page')
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage('Page must be a positive integer'),
+  query('limit')
+    .optional()
+    .isInt({ min: 1, max: 100 })
+    .withMessage('Limit must be between 1 and 100'),
+  handleValidationErrors,
+];

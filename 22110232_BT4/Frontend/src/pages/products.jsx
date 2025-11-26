@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Card, Spin, Select, Empty, message, Tag } from 'antd';
-import { ShoppingOutlined, DollarOutlined, TagOutlined } from '@ant-design/icons';
+import { Card, Spin, Select, Empty, message, Tag, Rate, Space } from 'antd';
+import { ShoppingOutlined, DollarOutlined, TagOutlined, EyeOutlined, FireOutlined } from '@ant-design/icons';
 import axios from '../util/axios.customize';
 import '../styles/products.css';
 
@@ -177,20 +177,50 @@ const Products = () => {
                 }
               >
                 <div className="product-info">
-                  <Tag color="blue" className="product-category">
-                    <TagOutlined /> {product.category}
-                  </Tag>
+                  <div className="product-badges">
+                    <Tag color="blue" className="product-category">
+                      <TagOutlined /> {product.category}
+                    </Tag>
+                    {product.discount > 0 && (
+                      <Tag color="red">
+                        <FireOutlined /> -{product.discount}%
+                      </Tag>
+                    )}
+                  </div>
                   <h3 className="product-name">{product.name}</h3>
                   {product.description && (
                     <p className="product-description">{product.description}</p>
                   )}
+                  
+                  {/* Stats section */}
+                  <div className="product-stats">
+                    {product.rating > 0 && (
+                      <Space size="small">
+                        <Rate 
+                          disabled 
+                          value={product.rating} 
+                          allowHalf 
+                          style={{ fontSize: 14 }}
+                        />
+                        <span className="rating-value">
+                          {product.rating.toFixed(1)}
+                        </span>
+                      </Space>
+                    )}
+                    {product.views > 0 && (
+                      <div className="product-views">
+                        <EyeOutlined /> {product.views.toLocaleString()} views
+                      </div>
+                    )}
+                  </div>
+
                   <div className="product-footer">
                     <div className="product-price">
                       <DollarOutlined /> {formatPrice(product.price)}
                     </div>
                     {product.stock !== undefined && (
-                      <div className="product-stock">
-                        Stock: {product.stock}
+                      <div className={`product-stock ${product.stock === 0 ? 'out-of-stock' : ''}`}>
+                        {product.stock === 0 ? 'Out of stock' : `Stock: ${product.stock}`}
                       </div>
                     )}
                   </div>
