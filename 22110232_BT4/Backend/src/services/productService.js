@@ -222,10 +222,17 @@ export const searchAndFilterProducts = async (searchParams) => {
     // Apply Fuzzy Search if query is provided
     if (query && query.trim() !== '') {
       const fuseOptions = {
-        keys: ['name', 'description', 'category'],
-        threshold: 0.4, // 0.0 = perfect match, 1.0 = match anything
+        keys: [
+          { name: 'name', weight: 0.7 },          // Ưu tiên tên sản phẩm nhất
+          { name: 'description', weight: 0.2 },   // Mô tả quan trọng thứ 2
+          { name: 'category', weight: 0.1 }       // Category ít quan trọng nhất
+        ],
+        threshold: 0.3,              // Giảm từ 0.4 → 0.3 để chính xác hơn
         includeScore: true,
-        minMatchCharLength: 2,
+        minMatchCharLength: 2,       // Ít nhất 2 ký tự mới tìm
+        distance: 100,               // Khoảng cách tối đa giữa các match
+        ignoreLocation: true,        // Không quan tâm vị trí trong text
+        findAllMatches: true,        // Tìm tất cả matches
       };
 
       const fuse = new Fuse(allProducts, fuseOptions);

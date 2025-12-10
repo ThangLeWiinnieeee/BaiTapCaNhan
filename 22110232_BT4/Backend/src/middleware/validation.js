@@ -30,15 +30,6 @@ export const validateRegister = [
     .withMessage('Username must be between 3 and 50 characters')
     .matches(/^[a-zA-Z0-9_]+$/)
     .withMessage('Username can only contain letters, numbers, and underscores'),
-  body('phone')
-    .optional({ nullable: true })
-    .matches(/^[0-9+\-\s()]+$/)
-    .withMessage('Please provide a valid phone number'),
-  body('address')
-    .optional({ nullable: true })
-    .trim()
-    .isLength({ max: 200 })
-    .withMessage('Address must not exceed 200 characters'),
   handleValidationErrors,
 ];
 

@@ -30,7 +30,7 @@ const Header = () => {
           {isAuthenticated ? (
             <>
               <span className="user-info">
-                <UserOutlined /> {user?.username}
+                <UserOutlined /> {user?.fullname || user?.email}
               </span>
               <button onClick={handleLogout} className="btn-logout">
                 <LogoutOutlined /> Logout

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Form, Input, Button, message } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined, HomeOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import axios from '../util/axios.customize';
 import '../styles/auth.css';
 
@@ -127,37 +127,6 @@ const Register = () => {
               placeholder="Confirm Password"
               size="large"
               autoComplete="new-password"
-            />
-          </Form.Item>
-
-          <Form.Item
-            name="phone"
-            rules={[
-              { 
-                pattern: /^[0-9+\-\s()]*$/,
-                message: 'Please enter a valid phone number!'
-              }
-            ]}
-          >
-            <Input
-              prefix={<PhoneOutlined />}
-              placeholder="Phone (optional)"
-              size="large"
-              autoComplete="tel"
-            />
-          </Form.Item>
-
-          <Form.Item
-            name="address"
-            rules={[
-              { max: 200, message: 'Address cannot exceed 200 characters!' }
-            ]}
-          >
-            <Input
-              prefix={<HomeOutlined />}
-              placeholder="Address (optional)"
-              size="large"
-              autoComplete="street-address"
             />
           </Form.Item>
 

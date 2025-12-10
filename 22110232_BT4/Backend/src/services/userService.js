@@ -6,13 +6,41 @@ const SALT_ROUNDS = 10;
 
 export const registerUser = async (userData) => {
   try {
-    const { email, password, username, phone, address } = userData;
+    const { email, password, username } = userData;
 
     // Validate required fields
     if (!email || !password || !username) {
       return {
         EC: 1,
         EM: 'Email, password and username are required',
+        DT: null,
+      };
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return {
+        EC: 1,
+        EM: 'Invalid email format',
+        DT: null,
+      };
+    }
+
+    // Validate password strength
+    if (password.length < 6) {
+      return {
+        EC: 1,
+        EM: 'Password must be at least 6 characters',
+        DT: null,
+      };
+    }
+
+    // Validate username
+    if (username.length < 3) {
+      return {
+        EC: 1,
+        EM: 'Username must be at least 3 characters',
         DT: null,
       };
     }
@@ -34,18 +62,34 @@ export const registerUser = async (userData) => {
     const newUser = await User.create({
       email,
       password: hashedPassword,
-      username,
-      phone: phone || '',
-      address: address || '',
+      fullname: username,
     });
+
+    // Generate JWT token
+    const token = jwt.sign(
+      {
+        id: newUser._id,
+        email: newUser.email,
+        fullname: newUser.fullname,
+        role: newUser.role || 'user',
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+      }
+    );
 
     return {
       EC: 0,
       EM: 'User registered successfully',
       DT: {
-        id: newUser._id,
-        email: newUser.email,
-        username: newUser.username,
+        access_token: token,
+        user: {
+          id: newUser._id,
+          email: newUser.email,
+          fullname: newUser.fullname,
+          role: newUser.role || 'user',
+        },
       },
     };
   } catch (error) {
@@ -94,7 +138,7 @@ export const loginUser = async (email, password) => {
       {
         id: user._id,
         email: user.email,
-        username: user.username,
+        fullname: user.fullname,
         role: user.role || 'user',
       },
       process.env.JWT_SECRET,
@@ -111,9 +155,7 @@ export const loginUser = async (email, password) => {
         user: {
           id: user._id,
           email: user.email,
-          username: user.username,
-          phone: user.phone,
-          address: user.address,
+          fullname: user.fullname,
           role: user.role || 'user',
         },
       },
